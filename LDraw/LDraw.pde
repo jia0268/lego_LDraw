@@ -1,4 +1,4 @@
-float s = 80;
+float s = 8;
 ArrayList<PVector[]> pts = new ArrayList<PVector[]>();
 void myReadDat(String filename){
   String [] lines = loadStrings(filename);
@@ -10,14 +10,29 @@ void myReadDat(String filename){
         pt[i] = new PVector( float(a[2+i*3]), float(a[2+i*3+1]), float(a[2+i*3+2]));
       }
       pts.add(pt);
+    }else if(a[0].equals("1")){
+      float [] m = new float[12];
+      for(int i=0;i<12;i++) m[i] = float(a[2+i]);
+      int prev = pts.size(); //讀入更多檔案之前
+      myReadDat(a[14]); //讀入新檔案
+      int after = pts.size(); //讀入更多檔案之後
+      for(int i=prev;i<after;i++){
+        PVector [] now = pts.get(i);
+        for(PVector p : now){
+          float x2 = m[3]*p.x + m[4]*p.y + m[5]*p.z + m[0];
+          float y2 = m[6]*p.x + m[7]*p.y + m[8]*p.z + m[1];
+          float z2 = m[9]*p.x + m[10]*p.y + m[11]*p.z + m[2];
+          p.x = x2;
+          p.y = y2;
+          p.z = z2;
+        }
+      }
     }
   }
 }
 void setup(){
   size(500,500,P3D);
-  myReadDat("4-4cyli.dat");
-  myReadDat("4-4edge.dat");
-  myReadDat("4-4disc.dat");
+  myReadDat("stud4.dat");
 }
 void draw(){
   background(250);
