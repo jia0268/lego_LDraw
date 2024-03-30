@@ -1,7 +1,12 @@
 float s = 8;
 ArrayList<PVector[]> pts = new ArrayList<PVector[]>();
 void myReadDat(String filename){
-  String [] lines = loadStrings(filename);
+  String filename2 = "";
+  for(int i=0; i<filename.length(); i++){
+    if(filename.charAt(i)=='\\')filename2 += '/';
+    else filename2 += filename.charAt(i);
+  }
+  String [] lines = loadStrings(filename2);
   for(String line : lines){
     String [] a =split(line, " ");
     if(a[0].equals("2")||a[0].equals("3")||a[0].equals("4")){
@@ -32,7 +37,7 @@ void myReadDat(String filename){
 }
 void setup(){
   size(500,500,P3D);
-  myReadDat("stud4.dat");
+  myReadDat("3626cp01.dat");
 }
 void draw(){
   background(250);
