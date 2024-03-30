@@ -1,7 +1,8 @@
 float s = 8;
 ArrayList<PVector[]> pts = new ArrayList<PVector[]>();
-ArrayList<Integer> colors = new ArrayList<Integer>();
-color [] table = new color[32];
+ArrayList<Integer> colors = new ArrayList<Integer>(); //改用正確的色碼(真的色彩)，直接放color色彩，不再放 code index
+ArrayList<Integer> current_color = new ArrayList<Integer>();
+color [] table = new color[256];
 void myReadDat(String filename){
   String filename2 = "";
   for(int i=0; i<filename.length(); i++){
@@ -17,12 +18,17 @@ void myReadDat(String filename){
         pt[i] = new PVector( float(a[2+i*3]), float(a[2+i*3+1]), float(a[2+i*3+2]));
       }
       pts.add(pt);
-      colors.add((int(a[1])));
+      if(int(a[1])==16) colors.add(current_color.get(current_color.size()-1));
+      else colors.add(table[int(a[1])]); //改用正確的色碼(真的色彩)，直接放color色彩，不再放 code index
+      //colors.add((int(a[1])));
     }else if(a[0].equals("1")){
       float [] m = new float[12];
       for(int i=0;i<12;i++) m[i] = float(a[2+i]);
       int prev = pts.size(); //讀入更多檔案之前
+      if(int(a[1])==16)current_color.add(current_color.get(current_color.size()-1));
+      else current_color.add(table[int(a[1])]); //push顏色
       myReadDat(a[14]); //讀入新檔案
+      current_color.remove(current_color.size()-1); //pop顏色
       int after = pts.size(); //讀入更多檔案之後
       for(int i=prev;i<after;i++){
         PVector [] now = pts.get(i);
@@ -40,8 +46,11 @@ void myReadDat(String filename){
 }
 void setup(){
   size(500,500,P3D);
+  current_color.add(#FFFF80);
   table[0] = #000000;
-  table[16] = #FFFF00;
+  table[16] = #FFFF80;
+  table[24] = #7F7F7F;
+  table[32] = #000000;
   myReadDat("3626cp01.dat");
 }
 void mouseDragged(){
@@ -58,14 +67,14 @@ void draw(){
   for(int i=0; i<pts.size(); i++){
   //for(PVector [] pt : pts){
     PVector[] pt = pts.get(i);
-    Integer c = colors.get(i);
+    color c = colors.get(i);
     if(pt.length==2){
       beginShape(LINE);
-      stroke(table[c]);
+      stroke(c);//改用正確的色碼(真的色彩)，直接放color色彩，不再放 code index
     }else if(pt.length==3 || pt.length==4){
       beginShape();
       noStroke();
-      fill(table[c]);
+      fill(c);
     }
     for(PVector p : pt){
       vertex(p.x*s,p.y*s,p.z*s);
