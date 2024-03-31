@@ -1,0 +1,14 @@
+0 ~Obsolete file
+0 Name: 7-16ring1.dat
+0 Author: Ulrich Röder [UR]
+0 !LDRAW_ORG Primitive UPDATE 2024-01
+0 !LICENSE Licensed under CC BY 4.0 : see CAreadme.txt
+
+0 BFC CERTIFY CCW
+
+0 !HISTORY 2020-12-29 [PTadmin] Official Update 2020-03
+0 !HISTORY 2021-01-04 [cwdee] Not needed as 7-16rin1 already exists
+0 !HISTORY 2024-01-29 [OrionP] Official Update 2024-01
+
+
+1 16 0 0 0 1 0 0 0 1 0 0 0 1 empty.dat

@@ -11,7 +11,9 @@ void myReadDat(String filename){
     if(filename.charAt(i)=='\\')filename2 += '/';
     else filename2 += filename.charAt(i);
   }
-  String [] lines = loadStrings(filename2);
+  String [] lines = loadStrings("parts/"+filename2);
+  if(lines==null) lines = loadStrings("p/"+filename2);
+  if(lines==null) lines = loadStrings("models/"+filename2);
   for(String line : lines){
     String [] a =split(line, " ");
     if(a[0].equals("2")||a[0].equals("3")||a[0].equals("4")){
