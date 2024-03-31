@@ -1,8 +1,10 @@
 float s = 8;
 ArrayList<PVector[]> pts = new ArrayList<PVector[]>();
 ArrayList<Integer> colors = new ArrayList<Integer>(); //改用正確的色碼(真的色彩)，直接放color色彩，不再放 code index
-ArrayList<Integer> current_color = new ArrayList<Integer>();
-color [] table = new color[256];
+ArrayList<Integer> current_color = new ArrayList<Integer>(); //現在的色彩
+ArrayList<Integer> complement_color = new ArrayList<Integer>(); //現在色彩對應的互補色
+color [] table = new color[256]; //現在顏色
+color [] table2 = new color[256]; //互補色
 void myReadDat(String filename){
   String filename2 = "";
   for(int i=0; i<filename.length(); i++){
@@ -18,17 +20,26 @@ void myReadDat(String filename){
         pt[i] = new PVector( float(a[2+i*3]), float(a[2+i*3+1]), float(a[2+i*3+2]));
       }
       pts.add(pt);
-      if(int(a[1])==16) colors.add(current_color.get(current_color.size()-1));
+      if(int(a[1])==16){ //主要色
+        colors.add(current_color.get(current_color.size()-1));
+      }else if(int(a[1])==24){ //輔助色
+        colors.add(complement_color.get(complement_color.size()-1));
+      }
       else colors.add(table[int(a[1])]); //改用正確的色碼(真的色彩)，直接放color色彩，不再放 code index
-      //colors.add((int(a[1])));
     }else if(a[0].equals("1")){
       float [] m = new float[12];
       for(int i=0;i<12;i++) m[i] = float(a[2+i]);
       int prev = pts.size(); //讀入更多檔案之前
-      if(int(a[1])==16)current_color.add(current_color.get(current_color.size()-1));
-      else current_color.add(table[int(a[1])]); //push顏色
+      if(int(a[1])==16){
+        current_color.add(current_color.get(current_color.size()-1));
+        complement_color.add(complement_color.get(complement_color.size()-1));
+      }else{
+        current_color.add(table[int(a[1])]); //push顏色
+        complement_color.add(table[int(a[1])]);
+      }
       myReadDat(a[14]); //讀入新檔案
       current_color.remove(current_color.size()-1); //pop顏色
+      complement_color.remove(complement_color.size()-1); 
       int after = pts.size(); //讀入更多檔案之後
       for(int i=prev;i<after;i++){
         PVector [] now = pts.get(i);
@@ -47,10 +58,15 @@ void myReadDat(String filename){
 void setup(){
   size(500,500,P3D);
   current_color.add(#FFFF80);
+  complement_color.add(#333333);
   table[0] = #000000;
   table[16] = #FFFF80;
   table[24] = #7F7F7F;
   table[32] = #000000;
+  table2[0] = #333333;
+  table2[16] = #333333;
+  table2[24] = #333333;
+  table2[32] = #333333;
   myReadDat("3626cp01.dat");
 }
 void mouseDragged(){
@@ -69,7 +85,7 @@ void draw(){
     PVector[] pt = pts.get(i);
     color c = colors.get(i);
     if(pt.length==2){
-      beginShape(LINE);
+      beginShape(LINES); //修正 我前面誤寫成 LINE
       stroke(c);//改用正確的色碼(真的色彩)，直接放color色彩，不再放 code index
     }else if(pt.length==3 || pt.length==4){
       beginShape();
