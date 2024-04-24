@@ -5,15 +5,21 @@ ArrayList<Integer> current_color = new ArrayList<Integer>(); //現在的色彩
 ArrayList<Integer> complement_color = new ArrayList<Integer>(); //現在色彩對應的互補色
 color [] table = new color[256]; //現在顏色
 color [] table2 = new color[256]; //互補色
+String[] myLoadStrings(String filename){
+  File file = new File(dataPath(filename));
+  if(!file.exists()) return null;
+  else return loadStrings(filename);
+}
 void myReadDat(String filename){
   String filename2 = "";
   for(int i=0; i<filename.length(); i++){
     if(filename.charAt(i)=='\\')filename2 += '/';
     else filename2 += filename.charAt(i);
   }
-  String [] lines = loadStrings("parts/"+filename2);
-  if(lines==null) lines = loadStrings("p/"+filename2);
-  if(lines==null) lines = loadStrings("models/"+filename2);
+  String [] lines = myLoadStrings("parts/"+filename2);
+  //if(lines==null) lines = myLoadStrings("p/48/"+filename2);
+  if(lines==null) lines = myLoadStrings("p/"+filename2);
+  if(lines==null) lines = myLoadStrings("models/"+filename2);
   for(String line : lines){
     String [] a =split(line, " ");
     if(a[0].equals("2")||a[0].equals("3")||a[0].equals("4")){
