@@ -22,10 +22,15 @@ void myReadDat(String filename){
   if(lines==null) lines = myLoadStrings("models/"+filename2);
   for(String line : lines){
     String [] a =split(line, " ");
-    if(a[0].equals("2")||a[0].equals("3")||a[0].equals("4")){
-      PVector [] pt = new PVector[int(a[0])];
-      for(int i=0;i<int(a[0]);i++){
+    if(a[0].equals("2")||a[0].equals("3")||a[0].equals("4")||a[0].equals("5")){
+      int ptN = int(a[0]);
+      PVector [] pt = new PVector[ptN];
+      for(int i=0;i<ptN;i++){
+        if(ptN==5 && i==4){ //特別針對輔助線 Type 5其實只有4個頂點
+          pt[i] = new PVector(); //無用的點 
+        }else{ //有用的點
         pt[i] = new PVector( float(a[2+i*3]), float(a[2+i*3+1]), float(a[2+i*3+2]));
+        }
       }
       pts.add(pt);
       if(int(a[1])==16){ //主要色
@@ -93,7 +98,7 @@ void draw(){
     PVector[] pt = pts.get(i);
     color c = colors.get(i);
     if(pt.length==2){
-      beginShape(LINES); //修正 我前面誤寫成 LINE
+      beginShape(LINES);
       stroke(c);//改用正確的色碼(真的色彩)，直接放color色彩，不再放 code index
     }else if(pt.length==3 || pt.length==4){
       beginShape();
@@ -105,5 +110,19 @@ void draw(){
     }
     if(pt.length==2)endShape();
     else if(pt.length==3 || pt.length==4)endShape(CLOSE);
+  }
+  //想要畫Line Type 5
+  for(int i=0; i<pts.size(); i++){
+    PVector[] pt = pts.get(i);
+    color c = colors.get(i);
+    if(pt.length==5){ //Type 5只有前四個有效頂點 點1 點2 輔助1 輔助2
+      beginShape(LINES);
+      stroke(c);
+      for(int k=0;k<2;k++){ //只有前面兩個頂點要畫
+        PVector p = pt[k];
+        vertex(p.x*s,p.y*s,p.z*s);
+      }
+      endShape();
+    }
   }
 }
