@@ -118,11 +118,20 @@ void draw(){
     if(pt.length==5){ //Type 5只有前四個有效頂點 點1 點2 輔助1 輔助2
       beginShape(LINES);
       stroke(c);
-      for(int k=0;k<2;k++){ //只有前面兩個頂點要畫
-        PVector p = pt[k];
-        vertex(p.x*s,p.y*s,p.z*s);
+      if(checkType5(pt)){
+        for(int k=0;k<2;k++){ //只有前面兩個頂點要畫
+          PVector p = pt[k];
+          vertex(p.x*s,p.y*s,p.z*s);
+        }
       }
       endShape();
     }
   }
+}
+
+boolean checkType5(PVector [] p){ //input 必須是2D
+  float x1=p[0].x,y1=p[0].y;
+  float x2=p[1].x,y2=p[1].y;
+  float a=-(y2-y1),b=(x2-x1),c=-y1*(x2-x1)+x1*(y2-y1);
+  return (a*p[2].x+b*p[2].y+c)*(a*p[3].x+b*p[3].y+c)>=0;//代入方程式看是否同向
 }
