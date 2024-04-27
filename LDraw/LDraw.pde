@@ -1,4 +1,4 @@
-float s = 8;
+float s = 3;
 ArrayList<PVector[]> pts = new ArrayList<PVector[]>();
 ArrayList<Integer> colors = new ArrayList<Integer>(); //改用正確的色碼(真的色彩)，直接放color色彩，不再放 code index
 ArrayList<Integer> current_color = new ArrayList<Integer>(); //現在的色彩
@@ -117,8 +117,9 @@ void draw(){
     color c = colors.get(i);
     if(pt.length==5){ //Type 5只有前四個有效頂點 點1 點2 輔助1 輔助2
       beginShape(LINES);
+      strokeWeight(1.5);
       stroke(c);
-      if(checkType5(pt)){
+      if(checkType5matrix(pt)){
         for(int k=0;k<2;k++){ //只有前面兩個頂點要畫
           PVector p = pt[k];
           vertex(p.x*s,p.y*s,p.z*s);
@@ -128,7 +129,19 @@ void draw(){
     }
   }
 }
-
+PVector myMult(PMatrix3D m,PVector p){
+  PVector ans = new PVector();
+  m.mult(p,ans);
+  return ans;
+}
+boolean checkType5matrix(PVector [] p){
+  PVector [] p2 = new PVector[4];
+  PGraphics3D g = (PGraphics3D) this.g;
+  for(int i=0;i<4;i++){
+    p2[i]=myMult(g.projmodelview,p[i]);
+  }
+  return checkType5(p2);
+}
 boolean checkType5(PVector [] p){ //input 必須是2D
   float x1=p[0].x,y1=p[0].y;
   float x2=p[1].x,y2=p[1].y;
